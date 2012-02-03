@@ -1,6 +1,7 @@
 
 #include <xs1.h>
 #include <print.h>
+#include <xscope.h>
 
 #include "mixer.h"
 
@@ -127,7 +128,8 @@ int main(void)
 {
     streaming chan c_in[MIXER_COUNT], c_out[MIXER_COUNT];
     chan c_ctrl[MIXER_COUNT];
-
+    xscope_register(0);
+    xscope_config_io(XSCOPE_IO_BASIC);
     par
     {
         /* Call mixer thread */

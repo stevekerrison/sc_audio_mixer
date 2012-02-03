@@ -1,7 +1,6 @@
 
 #include <xs1.h>
 #include <print.h>
-#include <xscope.h>
 
 #include "mixer.h"
 
@@ -70,53 +69,55 @@ void DoSamples(streaming chanend c_in, streaming chanend c_out)
         {
             if(j < 8)
             {
-                printint(g_sinewave[j][i]<<8);  
+                //printint(g_sinewave[j][i]<<8);  
             }
             else
             {
-                printint(0);
+                //printint(0);
             }
-            printstr(" ");             
+            //printstr(" ");             
         } 
 
         /* Print received samples*/
         for(int i = 0; i < MIXER_NUM_CHAN_OUT; i++)
         {
-            printint(buffer[i]);
-            printstr(" ");
+            //printint(buffer[i]);
+            //printstr(" ");
         }
-        printstrln("");        
+        //printstrln("");        
     }
 
 }
 
 void MixerTest(streaming chanend c_in, streaming chanend c_out, chanend c_ctrl)
 {
-    printstr("#Original Channels\n");    
+    //printstr("#Original Channels\n");    
     DoSamples(c_in, c_out);   
-    
+
     /* Update some volumes */
-    printstr("#Nobble weights\n"); 
+    //printstr("#Nobble weights\n"); 
     Mixer_UpdateWeight(c_ctrl, 0, 0, 0x900000);  
     Mixer_UpdateWeight(c_ctrl, 1, 1, 0x900000);  
     DoSamples(c_in, c_out); 
 
-    printstr("#Mix 0: Mix in channel 1\n");
+    //printstr("#Mix 0: Mix in channel 1\n");
     Mixer_UpdateWeight(c_ctrl, 0, 1, 0x900000);  
     DoSamples(c_in, c_out); 
 
-    printstr("#Mix 1: Mix channel 1 and 2\n");
+    //printstr("#Mix 1: Mix channel 1 and 2\n");
     Mixer_UpdateWeight(c_ctrl, 1, 1, 0xa00000);  
     Mixer_UpdateWeight(c_ctrl, 1, 2, 0x900000);  
     DoSamples(c_in, c_out); 
 
-    printstr("#Mix1: Saturation test\n");
+    //printstr("#Mix1: Saturation test\n");
     Mixer_UpdateWeight(c_ctrl, 0, 1, 0x2000000);  
     Mixer_UpdateWeight(c_ctrl, 0, 2, 0x200000);  
     DoSamples(c_in, c_out); 
 
     /* Kill off mixer thread */
     Mixer_Kill(c_ctrl);
+    soutct(c_in,XS1_CT_PAUSE);
+    soutct(c_out,XS1_CT_PAUSE);
 }
 
 void dummy()
@@ -128,8 +129,7 @@ int main(void)
 {
     streaming chan c_in[MIXER_COUNT], c_out[MIXER_COUNT];
     chan c_ctrl[MIXER_COUNT];
-    xscope_register(0);
-    xscope_config_io(XSCOPE_IO_BASIC);
+
     par
     {
         /* Call mixer thread */
@@ -137,7 +137,7 @@ int main(void)
 
         /* Call thread to test mixer */
         MixerTest(c_in[0], c_out[0], c_ctrl[0]);
-
+        
         /* Some dummy threads - so we get worst case XTA timing */
         dummy();
         dummy();

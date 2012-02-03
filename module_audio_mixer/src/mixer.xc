@@ -1,12 +1,11 @@
 
 #include <xs1.h>
 #include <print.h>
-
 #include "mixer.h"
 
-#pragma xta command "add exclusion exit_"
+/*#pragma xta command "add exclusion exit_"
 #pragma xta command "analyse path sample_input sample_output"
-#pragma xta command "set required - 5200 ns" /* 192kHz */
+#pragma xta command "set required - 5200 ns"*/ /* 192kHz */
 
 void Mixer_UpdateWeight(chanend c_ctrl, unsigned mix, unsigned channel, unsigned weight)
 {
@@ -106,8 +105,9 @@ void Mixer(streaming chanend c_in, streaming chanend c_out, chanend c_ctrl)
                      case MIXER_CMD_KILL:
 #pragma xta endpoint "exit_"
                         /* Kill command, kill thread */
+                        soutct(c_in,XS1_CT_PAUSE);
+                        soutct(c_out,XS1_CT_PAUSE);
                         return;
-
                 }
                 break;
 
